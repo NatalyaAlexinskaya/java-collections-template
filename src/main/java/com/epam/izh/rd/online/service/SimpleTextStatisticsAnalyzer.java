@@ -4,8 +4,6 @@ import com.epam.izh.rd.online.helper.Direction;
 
 import java.util.*;
 
-import static java.util.Collections.*;
-
 /**
  * Совет:
  * Начните с реализации метода {@link SimpleTextStatisticsAnalyzer#getWords(String)}.
@@ -23,7 +21,12 @@ public class SimpleTextStatisticsAnalyzer implements TextStatisticsAnalyzer {
      */
     @Override
     public int countSumLengthOfWords(String text) {
-        return 0;
+        List<String> list = getWords(text);
+        int count = 0;
+        for (String string : list) {
+            count += string.length();
+        }
+        return count;
     }
 
     /**
@@ -34,7 +37,8 @@ public class SimpleTextStatisticsAnalyzer implements TextStatisticsAnalyzer {
      */
     @Override
     public int countNumberOfWords(String text) {
-        return 0;
+        List<String> list = getWords(text);
+        return list.size();
     }
 
     /**
@@ -44,7 +48,12 @@ public class SimpleTextStatisticsAnalyzer implements TextStatisticsAnalyzer {
      */
     @Override
     public int countNumberOfUniqueWords(String text) {
-        return 0;
+        List<String> list = getWords(text);
+        Set<String> set = new HashSet<>();
+        for (String string : list) {
+            set.add(string);
+        }
+        return set.size();
     }
 
     /**
@@ -57,7 +66,12 @@ public class SimpleTextStatisticsAnalyzer implements TextStatisticsAnalyzer {
      */
     @Override
     public List<String> getWords(String text) {
-        return emptyList();
+        List<String> list = new ArrayList<String>();
+        String[] array = text.split("\\W+");
+        for (int i = 0; i < array.length; i++) {
+            list.add(array[i]);
+        }
+        return list;
     }
 
     /**
@@ -70,7 +84,12 @@ public class SimpleTextStatisticsAnalyzer implements TextStatisticsAnalyzer {
      */
     @Override
     public Set<String> getUniqueWords(String text) {
-        return emptySet();
+        List<String> list = getWords(text);
+        Set<String> set = new HashSet<>();
+        for (String string : list) {
+            set.add(string);
+        }
+        return set;
     }
 
     /**
@@ -82,7 +101,24 @@ public class SimpleTextStatisticsAnalyzer implements TextStatisticsAnalyzer {
      */
     @Override
     public Map<String, Integer> countNumberOfWordsRepetitions(String text) {
-        return emptyMap();
+        List<String> list = getWords(text);
+        Collections.sort(list);
+        Map<String, Integer> map = new HashMap<>();
+        int count = 1;
+        for (int i = 0; i < list.size() - 1; i++) {
+            if (list.get(i).equals(list.get(i + 1))) {
+                count++;
+            } else {
+                map.put(list.get(i), count);
+                count = 1;
+            }
+        }
+
+        if (!list.get(list.size() - 1).equals(list.get(list.size() - 2))) {
+            map.put(list.get(list.size() - 1), count);
+        }
+
+        return map;
     }
 
     /**
@@ -95,6 +131,26 @@ public class SimpleTextStatisticsAnalyzer implements TextStatisticsAnalyzer {
      */
     @Override
     public List<String> sortWordsByLength(String text, Direction direction) {
-        return emptyList();
+        List<String> list = getWords(text);
+
+        switch (direction) {
+            case ASC:
+                Collections.sort(list, new Comparator<String>() {
+                    @Override
+                    public int compare(String o1, String o2) {
+                        return o1.length() - o2.length();
+                    }
+                });
+                break;
+            case DESC:
+                Collections.sort(list, new Comparator<String>() {
+                    @Override
+                    public int compare(String o1, String o2) {
+                        return o2.length() - o1.length();
+                    }
+                });
+                break;
+        }
+        return list;
     }
 }
